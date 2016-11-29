@@ -3,140 +3,119 @@
 var Post = require('./postModel');
 var Category = require('./categoryModel');
 var Comment = require('./commentModel');
-require('../config');
 
 module.exports = {
-
     // add new category if not existing
-  newCategory: function(req, res) {
+    newCategory: function (req, res) {
+        Category.findOne({ name: req.body.name }, function (err, category) {
+            if (err) {
+                return res.sendStatus(500);
+            }
 
-        Category.findOne({name: req.body.name} , function (err, category) {
-                if(err) {
-                    res.status(500).json({
-                        message: "failed",
-                        error: err
-                    });
-                }
-                console.log(category);
-                if(!category){
-                    var newCategory = new Category({
-                        name: req.body.name,
-                    });
-
-                    newCategory.save((err) => {
-                        if(err) {
-                            res.status(500).json({
-                                message: "failed",
-                                error: err
-                            });
-                        }
-                        
-                        return res.json({
-                            message: "success",
-                            category: newCategory
-                        });
-                    });
-                }else{
-                    
-                    return res.status(409).json({
-                        message: "existing category"
-                        
-                    });
-                }
-        });
-        
-        
-  },
-
-    
-    // publish new post
-    newPost: function(req, res) {
-
-        Category.findOne({"_id": req.params.categoryId} , function (err, category) {
-                if(err) {
-                    res.status(500).json({
-                        message: "failed",
-                        error: err
-                    });
-                }
-                console.log(category);
-
-                var newPost = new Post({
-                    user: req.body.user,
-                    title: req.body.title,
-                    content: req.body.content,
-                    category: category
+            if (!category) {
+                var newCategory = new Category({
+                    name: req.body.name,
                 });
 
-                newPost.save((err) => {
-                    if(err) {
-                        return res.status(500).json({
-                                message: "failed",
-                                error: err
-                            });
+                newCategory.save((err) => {
+                    if (err) {
+                        return res.sendStatus(500);
                     }
-                    else
-                        return res.json({
-                            message: "success",
-                            
-                        });
+
+                    return res.json({
+                        ok: true,
+                        category: newCategory
                     });
-
-
+                });
+            } else {
+                return res.status(409).json({
+                    ok: false,
+                    message: "existing category"
+                });
+            }
         });
+    },
 
-     
+    // publish new post
+    newPost: function (req, res) {
+        Category.findOne({ "_id": req.params.categoryId }, function (err, category) {
+            if (err) {
+                return res.sendStatus(500);
+            }
+
+            var newPost = new Post({
+                user: req.user,
+                content: {
+                    title: req.body.title
+                },
+                category: category
+            });
+
+            newPost.save((err, saved) => {
+                if (err) {
+                    return res.sendStatus(500);
+                }
+
+                res.json({
+                    ok: true,
+                    post: saved
+                });
+            });
+        });
     },
 
     // post new comment
-   newComment: function (req, res) {
-        
-        var post = Post.findByIdAndUpdate({"_id": req.params.postId}, {$push: {'comments':{
-            'user': req.body.user,
-            'content': req.body.content,
-        }}},{safe: true, upsert: true, new : true},
-        function(err, model) {
-            console.log(err);
-        });
+    newComment: function (req, res) {
+        var post = Post.findByIdAndUpdate({ "_id": req.params.postId }, {
+            $push: {
+                comments: {
+                    user: req.user,
+                    content: {
+                        text: req.body.comment
+                    }
+                }
+            }
+        }, { safe: true, upsert: true, new: true },
+            function (err, comment) {
+                if (err) {
+                    return res.sendStatus(500);
+                }
 
-        return res.json({
-                    message: "success",
-                    
+                return res.json({
+                    ok: true,
+                    comment: comment
                 });
-
+            });
     },
 
     // get all categories
     getCategories: function (req, res) {
-        Category.find().sort({'name': 'asc'})
+        Category.find().sort({ 'name': 'asc' })
             .exec((err, categories) => {
-                if(err) {
-                    return res.status(500).json({
-                        message: "failed",
-                        error: err
-                    });
+                if (err) {
+                    return res.sendStatus(500);
                 }
-            return res.json(categories);
-           
-            
-        })
+
+                res.json({
+                    ok: true,
+                    categories: categories
+                });
+            })
     },
 
     // get posts by selected category id
     getPosts: function (req, res) {
-
         var categoryId = req.params.categoryId;
 
-        Post.find({"category": categoryId}).sort({'timestamps': 'desc'}).exec((err, posts) => {
-                if(err) {
-                    return res.status(500).json({
-                        message: "failed",
-                        error: err
-                    });
-                }
-                return res.json(posts);
-        });
+        Post.find({ "category": categoryId }).sort({ 'timestamps': 'desc' }).exec((err, posts) => {
+            if (err) {
+                return res.sendStatus(500);
+            }
 
+            res.json({
+                ok: true,
+                posts: posts
+            });
+        });
     }
-   
 }

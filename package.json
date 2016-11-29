@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,14 @@
   "bugs": {
     "url": "https://github.com/vladimir-trifonov/desert-monsters-forum-service/issues"
   },
-  "homepage": "https://github.com/vladimir-trifonov/desert-monsters-forum-service#readme"
+  "homepage": "https://github.com/vladimir-trifonov/desert-monsters-forum-service#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "express-jwt": "^5.1.0",
+    "mongoose": "^4.7.0",
+    "morgan": "^1.7.0",
+    "thalassa": "git+https://e802b2f797209723a6a5e5bd079a33a32207836d:x-oauth-basic@github.com/vladimir-trifonov/thalassa.git"
+  }
 }

@@ -1,29 +1,19 @@
- 'use strict'
+'use strict'
 
-
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
 var CategoryModel = require('./categoryModel');
 var CommentModel = require('./commentModel');
-
+var userSchema = require('./userSchema');
 
 var PostSchema = new mongoose.Schema({
-  'user': {
-    'userId': String,
-    'name': String,  
+  user: userSchema,
+  content: {
+    title: String,
   },
-  'title': String,
-  'content': String, 
-  'category': {type: mongoose.Schema.Types.ObjectId, ref: 'CategoryModel'},
-  'comments': [
-    {'user': {
-        'userId': String,
-        'name': String,          
-      },
-     'content': String}],
+  category: { type: mongoose.Schema.Types.ObjectId, ref: CategoryModel },
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: CommentModel }],
 }, {
-   timestamps: true
-});
-
-
+    timestamps: true
+  });
 
 module.exports = mongoose.model('Post', PostSchema);

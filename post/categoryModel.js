@@ -1,9 +1,9 @@
 'use strict'
 
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
 
 var CategorySchema = new mongoose.Schema({
-  'name': String,
+  name: String
 });
 
 module.exports = mongoose.model('Category', CategorySchema);
