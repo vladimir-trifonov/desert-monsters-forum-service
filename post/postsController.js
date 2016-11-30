@@ -7,6 +7,10 @@ var Comment = require('./commentModel');
 module.exports = {
     // add new category if not existing
     newCategory: function (req, res) {
+        if (!req.body.name) {
+            return res.sendStatus(400);
+        }
+
         Category.findOne({ name: req.body.name }, function (err, category) {
             if (err) {
                 return res.sendStatus(500);
@@ -38,6 +42,10 @@ module.exports = {
 
     // publish new post
     newPost: function (req, res) {
+        if (!req.body.title) {
+            return res.sendStatus(400);
+        }
+
         Category.findOne({ "_id": req.params.categoryId }, function (err, category) {
             if (err) {
                 return res.sendStatus(500);
@@ -66,6 +74,10 @@ module.exports = {
 
     // post new comment
     newComment: function (req, res) {
+        if (!req.body.comment) {
+            return res.sendStatus(400);
+        }
+
         var post = Post.findByIdAndUpdate({ "_id": req.params.postId }, {
             $push: {
                 comments: {

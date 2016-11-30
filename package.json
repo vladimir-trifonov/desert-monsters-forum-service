@@ -24,6 +24,6 @@
     "express-jwt": "^5.1.0",
     "mongoose": "^4.7.0",
     "morgan": "^1.7.0",
-    "thalassa": "git+https://e802b2f797209723a6a5e5bd079a33a32207836d:x-oauth-basic@github.com/vladimir-trifonov/thalassa.git"
+    "thalassa": "https://github.com/vladimir-trifonov/thalassa.git"
   }
 }
