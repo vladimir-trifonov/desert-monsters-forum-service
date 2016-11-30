@@ -11,7 +11,7 @@ var PostSchema = new mongoose.Schema({
     title: String,
   },
   category: { type: mongoose.Schema.Types.ObjectId, ref: CategoryModel },
-  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: CommentModel }],
+  comments: [{ type: mongoose.Schema.Types.ObjectId, ref: CommentModel }]
 }, {
     timestamps: true
   });

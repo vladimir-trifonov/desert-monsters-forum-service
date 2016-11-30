@@ -10,7 +10,7 @@ var PORT = process.env.PORT || 4040;
 var app = express();
 
 app.use(cors());
-app.use(jwt({ secret: 'eyIkX18iOnsic3RyaWN0TW9kZSI6dHJ1ZSwiZ2V0dGVycyI6e30sIndhc1BvcHVsYXRlZCI6ZmFsc2UsImFjdGl2ZVBhdGhzIjp7InBhdGhgregergerge3453' }));
+app.use(jwt({ secret: process.env.SECRET }));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(require('./post/postRoutes'));
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://anybot:sacassdf23r@ds151127.mlab.com:51127/forum-db')
+mongoose.connect(process.env.MONGO_DB_CONN_STRING)
   .then(() => console.log('connection succesful'))
   .catch((err) => console.error(err))
 
@@ -38,14 +38,14 @@ app.listen(PORT, function () {
     var Thalassa = require('thalassa');
     var client = new Thalassa.Client({
       apiport: 80,
-      host: 'desertmonstersserviceregistry-93127.onmodulus.net',
+      host: process.env.SERVICE_REGISTRY,
       log: function (i, m) {
         console.log(m);
       }
     });
 
     client.register('desert-monsters-forum-service', '1.0.0', PORT, {
-      url: 'localhost:' + PORT
+      url: process.env.HOST
     });
     client.start();
 

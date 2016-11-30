@@ -74,18 +74,20 @@ module.exports = {
 
     // post new comment
     newComment: function (req, res) {
-        if (!req.body.comment) {
+        if (!req.body.text) {
             return res.sendStatus(400);
         }
 
+        var newComment = new Comment({
+            user: req.user,
+            content: {
+                text: req.body.text
+            }
+        });
+
         var post = Post.findByIdAndUpdate({ "_id": req.params.postId }, {
             $push: {
-                comments: {
-                    user: req.user,
-                    content: {
-                        text: req.body.comment
-                    }
-                }
+                comments: newComment
             }
         }, { safe: true, upsert: true, new: true },
             function (err, comment) {
@@ -95,7 +97,7 @@ module.exports = {
 
                 return res.json({
                     ok: true,
-                    comment: comment
+                    comment: newComment
                 });
             });
     },
@@ -119,15 +121,18 @@ module.exports = {
     getPosts: function (req, res) {
         var categoryId = req.params.categoryId;
 
-        Post.find({ category: categoryId }).sort({ updatedAt: -1 }).exec((err, posts) => {
-            if (err) {
-                return res.sendStatus(500);
-            }
+        Post.find({ category: categoryId })
+            .sort({ updatedAt: -1 })
+            .populate('commentÍ')
+            .exec((err, posts) => {
+                if (err) {
+                    return res.sendStatus(500);
+                }
 
-            res.json({
-                ok: true,
-                posts: posts
+                res.json({
+                    ok: true,
+                    posts: posts
+                });
             });
-        });
     }
 }
