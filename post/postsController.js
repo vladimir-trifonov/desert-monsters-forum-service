@@ -90,14 +90,20 @@ module.exports = {
                 comments: newComment
             }
         }, { safe: true, upsert: true, new: true },
-            function (err, comment) {
+            function (err) {
                 if (err) {
                     return res.sendStatus(500);
                 }
 
-                return res.json({
-                    ok: true,
-                    comment: newComment
+                newComment.save(function (err, saved) {
+                    if (err) {
+                        return res.sendStatus(500);
+                    }
+
+                    return res.json({
+                        ok: true,
+                        comment: saved
+                    });
                 });
             });
     },
@@ -123,7 +129,10 @@ module.exports = {
 
         Post.find({ category: categoryId })
             .sort({ updatedAt: -1 })
-            .populate('commentÍ')
+            .populate({
+                path: 'comments',
+                model: 'Comment'
+            })
             .exec((err, posts) => {
                 if (err) {
                     return res.sendStatus(500);
