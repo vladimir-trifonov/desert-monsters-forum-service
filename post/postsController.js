@@ -131,7 +131,8 @@ module.exports = {
             .sort({ updatedAt: -1 })
             .populate({
                 path: 'comments',
-                model: 'Comment'
+                model: 'Comment',
+                options: { sort: { createdAt: -1 } }
             })
             .exec((err, posts) => {
                 if (err) {
