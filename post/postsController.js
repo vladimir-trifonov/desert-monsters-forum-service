@@ -119,7 +119,7 @@ module.exports = {
     getPosts: function (req, res) {
         var categoryId = req.params.categoryId;
 
-        Post.find({ "category": categoryId }).sort({ 'timestamps': 'desc' }).exec((err, posts) => {
+        Post.find({ category: categoryId }).sort({ updatedAt: -1 }).exec((err, posts) => {
             if (err) {
                 return res.sendStatus(500);
             }
